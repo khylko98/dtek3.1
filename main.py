@@ -265,8 +265,14 @@ async def on_startup(bot: Bot):
         logging.info(f"Webhook set to {WEBHOOK_URL}{webhook_path}")
 
 
+async def handle_root(request):
+    """Обработчик для мониторинга (health check)"""
+    return web.Response(text="Bot is alive!", status=200)
+
+
 def main():
     app = web.Application()
+    app.router.add_get("/", handle_root)
     webhook_requests_handler = SimpleRequestHandler(dispatcher=dp, bot=bot)
     webhook_requests_handler.register(app, path=f"/webhook/{BOT_TOKEN}")
     setup_application(app, dp, bot=bot)
